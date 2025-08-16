@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { Card } from "@mui/material";
+import { Alert, Paper } from "@mui/material";
 import { API } from "../utils/API";
 import { useNavigate } from "react-router-dom";
 
@@ -19,32 +19,41 @@ export const Login = () => {
   const [emailMessage, setEmailMessage] = useState<string>("");
   const [passwordMessage, setPasswordMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
     const response = await API.authenticate({email: email, password: password});
 
-    if (response.accessToken) {
-      Auth?.setUserAuth(response);
+    if (response.data !== undefined) {
+      Auth?.setUserAuth(response.data);
       
       const userResponse = await API.getUser();
 
-      const authenticatedUser: User = {
-          id: userResponse.id,
+      if (userResponse.data !== undefined) {
+        const authenticatedUser: User = {
+          id: userResponse.data.id,
           email: email,
-          firstName: userResponse.firstName,
-          lastName: userResponse.lastName
-      };
+          firstName: userResponse.data.firstName,
+          lastName: userResponse.data.lastName
+        };
 
-      Auth?.userLogin(authenticatedUser);
+        Auth?.userLogin(authenticatedUser);
 
-      setEmail("");
-      setPassword("");
-      setIsError(false);
+        setEmail("");
+        setPassword("");
+        setIsError(false);
 
-      navigate("/user");
-    }        
+        navigate("/user");
+      }      
+    }
+    else {
+      if (response.error !== undefined) {
+        setErrorMessage(response.error.error);
+        setIsError(true);
+      }
+    }
   }
 
   const validateInput = (): boolean => {
@@ -73,7 +82,12 @@ export const Login = () => {
   return (
     <>            
       <Container maxWidth="sm" sx={{p: 2}}>
-        <Card variant="outlined" sx={{p: 3}}>
+        <Paper variant="elevation" square={false} sx={{p: 3}}>
+          {isError &&
+            <Alert severity="error">
+              {errorMessage}
+            </Alert>
+          }
           <Typography
               component="h1"
               variant="h4"
@@ -123,7 +137,7 @@ export const Login = () => {
               Login
             </Button>
           </Box>
-        </Card>
+        </Paper>
       </Container>
     </>
   );

@@ -12,15 +12,17 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { AuthContext } from "./context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Logout"];
 
 export const Navbar = () => {
   const Auth = useContext(AuthContext);
   const isLoggedIn = Auth?.userIsAuthenticated();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = !location.pathname.startsWith("/user");
   const [pages, setPages] = useState<string[]>([]);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -56,13 +58,15 @@ export const Navbar = () => {
   }
 
   useEffect(() => {
-    if (isLoggedIn) {
-      setPages(["Transactions"]);
+    if (isHome) {
+      setPages(["Home"]);
     }
     else {
-      setPages(["Home"]);
+      if (isLoggedIn) {
+        setPages(["Transactions"]);
+      }
     }    
-  }, [isLoggedIn]);
+  }, [isHome, isLoggedIn]);
 
   return (
     <AppBar position="static">
@@ -83,7 +87,7 @@ export const Navbar = () => {
               textDecoration: "none",
             }}
           >
-            InboxView
+            Inboxview
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -149,7 +153,7 @@ export const Navbar = () => {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            {isLoggedIn
+            {isLoggedIn && !isHome
               ?
               <>
                 <Tooltip title="Open settings">
@@ -185,14 +189,14 @@ export const Navbar = () => {
               : 
               <>
                 <Button 
+                  href="/login"
                   color="inherit"
-                  onClick={() => navigate("/login") }
                 >
                   Login
                 </Button>
-                <Button 
+                <Button
+                  href="/register"
                   color="inherit"
-                  onClick={() => navigate("/register") }
                 >
                   Register
                 </Button>

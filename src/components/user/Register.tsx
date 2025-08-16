@@ -1,41 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import { Card } from "@mui/material";
+import { Alert, AlertTitle, Paper } from "@mui/material";
 import { API } from "../utils/API";
 import { RegisterForm } from "./RegisterForm";
 
 export const Register = () => {
-  // const navigate = useNavigate();
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    const user = API.register({
-        email: formData.get("email")?.toString() || "",
-        firstName: formData.get("firstName")?.toString() || "",
-        lastName: formData.get("lastName")?.toString() || "",
-        password: formData.get("password")?.toString() || "",
-        passwordConfirm: formData.get("passwordConfirm")?.toString() || ""
-      });
-    console.log(user);
+    try {
+      const response = await API.register({
+          email: formData.get("email")?.toString() || "",
+          firstName: formData.get("firstName")?.toString() || "",
+          lastName: formData.get("lastName")?.toString() || "",
+          password: formData.get("password")?.toString() || "",
+          passwordConfirm: formData.get("passwordConfirm")?.toString() || ""
+        });
+
+      if (response.data !== undefined) {
+        setIsSubmit(true);
+        setErrorMessage("");
+      }
+      
+      if (response.error != undefined) {
+        setErrorMessage(response.error.error);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setErrorMessage("There is an issue with registration. Please try again.")
+    }    
   }
 
   return (
     <>            
       <Container maxWidth="sm" sx={{p: 2}}>
-        <Card variant="outlined" sx={{p: 3}}>
-          <Typography
-              component="h1"
-              variant="h4"
-              sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)", pb: 1 }}
-          >
-              Register
-          </Typography>
-          <RegisterForm handleSubmit={handleSubmit} />
-        </Card>
+        <Paper variant="elevation" square={false} sx={{p: 3}}>
+          {isSubmit
+            ? 
+              <Alert severity="success">
+                <AlertTitle>Registration Received</AlertTitle>
+                Email has been sent that contains a link to confirm your registration.
+                Please click the link to complete your registration.
+                Thank you.
+              </Alert>
+            :
+              <RegisterForm handleSubmit={handleSubmit} errorMessage={errorMessage} />
+          }
+        </Paper>
       </Container>
     </>
   );
