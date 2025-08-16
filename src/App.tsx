@@ -10,6 +10,7 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { UserPage } from "./components/user/UserPage";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
+import { VerificationPage } from "./components/user/VerificationPage";
 
 const theme = createTheme({
   palette: {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/" element={<Home />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route path="/verify" element={<VerificationPage />}></Route>
           <Route path="/user" element={<PrivateRoute><UserPage /></PrivateRoute>} />
         </Routes>
       </AuthProvider>

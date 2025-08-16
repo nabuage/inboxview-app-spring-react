@@ -38,6 +38,11 @@ interface UserResponse {
   error?: APIError;
 }
 
+interface VerificationParameters {
+  id: string;
+  code: string;
+}
+
 const authenticate = async (request: AuthRequest): Promise<AuthResponse> => {
   try {
     const response = await unauthenticated.post(
@@ -50,6 +55,7 @@ const authenticate = async (request: AuthRequest): Promise<AuthResponse> => {
         });
     return {data: response.data};
   } catch (error) {
+    console.error("Error authenticating user.", error);
     if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
       return {error: error.response?.data};
     }
@@ -71,6 +77,7 @@ const register = async (request: RegisterRequest): Promise<UserResponse> => {
 
     return {data: response.data};
   } catch (error) {
+    console.error("Error registering user.", error);
     if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
       return {error: error.response?.data};
     }
@@ -83,18 +90,32 @@ const getUser = async (): Promise<UserResponse> => {
     const response = await authenticated.get("/api/user/me");
     return {data: response.data};
   } catch (error) {
+    console.error("Error getting user.", error);
     if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
       return {error: error.response?.data};
     }
     throw error;
   }
-  
+}
+
+const verifyUser = async (parameters: VerificationParameters): Promise<UserResponse> => {
+  try {
+    const response = await unauthenticated.get("/api/registration/email/verify", {params: parameters});
+    return {data: response.data};
+  } catch (error) {
+    console.error("Error verifying user.", error);
+    if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
+      return {error: error.response?.data};
+    }
+    throw error;
+  }  
 }
 
 export const API = {
   authenticate,
   getUser,
-  register
+  register,
+  verifyUser
 };
 
 const unauthenticated = axios.create({
