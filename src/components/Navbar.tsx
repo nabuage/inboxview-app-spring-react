@@ -54,6 +54,8 @@ export const Navbar = () => {
         navigate("/user");
         break;
       }
+      default:
+        navigate(page.toLowerCase());
     }
   }
 

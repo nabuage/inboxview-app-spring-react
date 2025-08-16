@@ -111,11 +111,33 @@ const verifyUser = async (parameters: VerificationParameters): Promise<UserRespo
   }  
 }
 
+const logout = async (request: Auth): Promise<UserResponse> => {
+  try {
+    const response = await authenticated.post(
+    "/api/auth/logout",
+    request,
+    {  
+        headers: {
+            "Content-type": "application/json"
+        }
+    });
+
+    return {data: response.data};
+  } catch (error) {
+    console.error("Error logging out user.", error);
+    if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
+      return {error: error.response?.data};
+    }
+    throw error;
+  }  
+}
+
 export const API = {
   authenticate,
   getUser,
   register,
-  verifyUser
+  verifyUser,
+  logout
 };
 
 const unauthenticated = axios.create({

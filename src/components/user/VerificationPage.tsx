@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 export const VerificationPage = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const [errorMessage, setErrorMessage] = useState<string>("r");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     verify();

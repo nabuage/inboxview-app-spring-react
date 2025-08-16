@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Home } from "./components/home/Home";
 import { AuthProvider } from "./components/context/AuthContext";
 import { Login } from "./components/home/Login";
@@ -11,6 +11,7 @@ import { UserPage } from "./components/user/UserPage";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { VerificationPage } from "./components/user/VerificationPage";
+import { LogoutPage } from "./components/user/LogoutPage";
 
 const theme = createTheme({
   palette: {
@@ -32,6 +33,8 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/verify" element={<VerificationPage />}></Route>
           <Route path="/user" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+          <Route path="/logout" element={<PrivateRoute><LogoutPage /></PrivateRoute>} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
