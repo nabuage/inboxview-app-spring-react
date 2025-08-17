@@ -2,7 +2,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Home } from "./components/home/Home";
 import { AuthProvider } from "./components/context/AuthContext";
-import { Login } from "./components/home/Login";
+import { Login } from "./components/user/Login";
 import { Navbar } from "./components/Navbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Register } from "./components/user/Register";
@@ -10,8 +10,8 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { UserPage } from "./components/user/UserPage";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
-import { VerificationPage } from "./components/user/VerificationPage";
-import { LogoutPage } from "./components/user/LogoutPage";
+import { VerificationPage } from "./components/user/Verification";
+import { LogoutPage } from "./components/user/Logout";
 
 const theme = createTheme({
   palette: {
