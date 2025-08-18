@@ -11,9 +11,9 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { AuthContext } from "./context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { AuthContext } from "../context/AuthContext";
 
 const settings = ["Profile", "Logout"];
 
@@ -54,6 +54,8 @@ export const Navbar = () => {
         navigate("/user");
         break;
       }
+      case "":
+        break;
       default:
         navigate(page.toLowerCase());
     }

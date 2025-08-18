@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext, type User } from "../context/AuthContext";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
@@ -6,10 +6,10 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
 import { Alert, Paper } from "@mui/material";
 import { API } from "../utils/API";
 import { useNavigate } from "react-router-dom";
+import { PageHeader } from "../generic/PageHeader";
 
 export const Login = () => {
   const Auth = useContext(AuthContext);
@@ -20,6 +20,12 @@ export const Login = () => {
   const [passwordMessage, setPasswordMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (Auth?.userIsAuthenticated()) {
+      Auth?.userLogout();
+    }    
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -88,13 +94,7 @@ export const Login = () => {
               {errorMessage}
             </Alert>
           }
-          <Typography
-              component="h1"
-              variant="h4"
-              sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)", pb: 1 }}
-          >
-              Login
-          </Typography>
+          <PageHeader text="Login" />
           <Box 
               // sx={{ mt: 4, p: 3, border: "1px solid #ccc", borderRadius: 2 }}
               sx={{ display: "flex", flexDirection: "column", gap: 2 }}

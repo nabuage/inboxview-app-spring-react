@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Auth } from "../context/AuthContext";
+import { type Auth } from "../context/AuthContext";
 
 interface APIError {
   id: string;
@@ -41,6 +41,13 @@ interface UserResponse {
 interface VerificationParameters {
   id: string;
   code: string;
+}
+
+export type UserTransaction = {
+  transactionId: number;
+  merchantName: string;
+  transactionDate: Date;
+  amount: number;
 }
 
 const authenticate = async (request: AuthRequest): Promise<AuthResponse> => {
@@ -132,12 +139,23 @@ const logout = async (request: Auth): Promise<UserResponse> => {
   }  
 }
 
+const getUserTransaction = async (year: number, month: number): Promise<UserTransaction[]> => {
+  try {
+    const response = await authenticated.get("/api/user/mailbox-transaction/" + year + "/" + month);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting user transactions.", error);
+    throw error;
+  }
+}
+
 export const API = {
   authenticate,
   getUser,
   register,
   verifyUser,
-  logout
+  logout,
+  getUserTransaction
 };
 
 const unauthenticated = axios.create({
@@ -167,6 +185,19 @@ authenticated.interceptors.request.use(
     return config;
   },
   (error) => {
+      console.error("Interceptor error", error);
       return Promise.reject(error);
+  }
+);
+
+authenticated.interceptors.response.use(
+  (response) => {
+    return response;
+  }, 
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      window.location.href = "/login";      
+    }
+    return Promise.reject(error);
   }
 );

@@ -3,15 +3,15 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Home } from "./components/home/Home";
 import { AuthProvider } from "./components/context/AuthContext";
 import { Login } from "./components/user/Login";
-import { Navbar } from "./components/Navbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Register } from "./components/user/Register";
-import { PrivateRoute } from "./components/PrivateRoute";
-import { UserPage } from "./components/user/UserPage";
+import { UserPage } from "./components/user/User";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { VerificationPage } from "./components/user/Verification";
 import { LogoutPage } from "./components/user/Logout";
+import { Navbar } from "./components/generic/Navbar";
+import { PrivateRoute } from "./components/generic/PrivateRoute";
 
 const theme = createTheme({
   palette: {

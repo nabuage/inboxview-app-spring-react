@@ -1,9 +1,10 @@
-import { Alert, Button, Typography } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
+import { PageHeader } from "../generic/PageHeader";
 
 type Props = {
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -56,13 +57,7 @@ export const RegisterForm = (props: Props) => {
   
   return (
     <>
-      <Typography
-          component="h1"
-          variant="h4"
-          sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)", pb: 1 }}
-      >
-          Register
-      </Typography>
+      <PageHeader text="Register" />
       {props.errorMessage &&
         <Alert severity="error">{props.errorMessage}</Alert>
       }
@@ -147,6 +142,5 @@ export const RegisterForm = (props: Props) => {
         </Button>
       </Box>
     </>
-
   );
 };
