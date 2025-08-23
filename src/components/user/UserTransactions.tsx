@@ -15,7 +15,7 @@ import { PageHeader } from "../generic/PageHeader";
 export const UserTransactions = () => {
   const [year, setYear] = useState<number>(LocalDate.now().year());
   const [month, setMonth] = useState<number>(LocalDate.now().monthValue());
-  const response = useQuery({
+  const {data, refetch} = useQuery({
     queryKey: ["userTransactions", year, month],
     queryFn: () => API.getUserTransaction(year, month)
   });
@@ -43,7 +43,7 @@ export const UserTransactions = () => {
       if (value !== null) {
         setMonth(value?.month() + 1);
         setYear(value?.year());
-        response.refetch();
+        refetch();
       }
     }
   }
@@ -67,7 +67,7 @@ export const UserTransactions = () => {
               onAccept={handleDateChange} />
           </LocalizationProvider>        
         </Box>        
-        <DataTable columns={columns} data={response.data ?? []} />
+        <DataTable columns={columns} data={data ?? []} />
       </Stack>      
     </>
   );
