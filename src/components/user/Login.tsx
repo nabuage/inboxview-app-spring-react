@@ -78,8 +78,8 @@ export const Login = () => {
     const email = document.getElementById("email") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;
 
-    // setEmail(email.value);
-    // setPassword(password.value);
+    setEmail(email.value);
+    setPassword(password.value);
     setEmailMessage("");
     setPasswordMessage("");
     setIsError(false);
