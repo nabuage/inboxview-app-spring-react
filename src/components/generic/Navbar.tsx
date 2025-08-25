@@ -62,14 +62,12 @@ export const Navbar = () => {
   }
 
   useEffect(() => {
-    if (isHome) {
-      setPages(["Home"]);
+    if (isLoggedIn) {
+      setPages(["Transactions"]);
     }
     else {
-      if (isLoggedIn) {
-        setPages(["Transactions"]);
-      }
-    }    
+      setPages(["Home", "", "Register", "Login"]);
+    }
   }, [isHome, isLoggedIn]);
 
   return (
@@ -121,9 +119,13 @@ export const Navbar = () => {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-                </MenuItem>
+                <>
+                  {page !== "" &&
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                  </MenuItem>
+                }
+                </>
               ))}
             </Menu>
           </Box>
@@ -147,18 +149,24 @@ export const Navbar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => navigateTo(page)}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
+              <>
+                {page !== ""
+                ? 
+                  <Button
+                    key={page}
+                    onClick={() => navigateTo(page)}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                  >
+                    {page}
+                  </Button>
+                :
+                  <Box flexGrow={1} />                  
+                }
+              </>
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            {isLoggedIn && !isHome
-              ?
+            {isLoggedIn &&             
               <>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -189,21 +197,6 @@ export const Navbar = () => {
                     </MenuItem>
                   ))}
                 </Menu>
-              </>
-              : 
-              <>
-                <Button 
-                  href="/login"
-                  color="inherit"
-                >
-                  Login
-                </Button>
-                <Button
-                  href="/register"
-                  color="inherit"
-                >
-                  Register
-                </Button>
               </>
             }
           </Box>

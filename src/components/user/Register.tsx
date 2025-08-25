@@ -7,9 +7,13 @@ import { RegisterForm } from "./RegisterForm";
 export const Register = () => {
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
+
+    setIsLoading(true);
+    setErrorMessage("");
 
     const formData = new FormData(event.currentTarget);
 
@@ -20,6 +24,8 @@ export const Register = () => {
           lastName: formData.get("lastName")?.toString() || "",
           password: formData.get("password")?.toString() || "",
           passwordConfirm: formData.get("passwordConfirm")?.toString() || ""
+        }).finally(() => {
+          setIsLoading(false);
         });
 
       if (response.data !== undefined) {
@@ -49,7 +55,7 @@ export const Register = () => {
                 Thank you.
               </Alert>
             :
-              <RegisterForm handleSubmit={handleSubmit} errorMessage={errorMessage} />
+              <RegisterForm handleSubmit={handleSubmit} errorMessage={errorMessage} isLoading={isLoading} />
           }
         </Paper>
       </Container>

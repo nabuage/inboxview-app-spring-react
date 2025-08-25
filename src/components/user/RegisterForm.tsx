@@ -1,14 +1,16 @@
-import { Alert, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { PageHeader } from "../generic/PageHeader";
+import { FormError } from "../generic/FormError";
 
 type Props = {
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   errorMessage: string;
+  isLoading: boolean;
 }
 
 export const RegisterForm = (props: Props) => {
@@ -18,6 +20,7 @@ export const RegisterForm = (props: Props) => {
   const [passwordMessage, setPasswordMessage] = useState<string>("");
   const [passwordConfirmationMessage, setPasswordConfrimationMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const validateInput = (): boolean => {
     const email = document.getElementById("email") as HTMLInputElement;
@@ -29,25 +32,31 @@ export const RegisterForm = (props: Props) => {
     setEmailMessage("");
     setPasswordMessage("");
     setIsError(false);
+    setErrors([]);
 
     if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value.trim())) {
+      setErrors(prev => [...prev, "Enter valid email."]);
       setEmailMessage("Enter valid email.")
       setIsError(true);
     }
     if (!firstName.value.trim()) {
+      setErrors(prev => [...prev, "Enter first name."]);
       setFirstNameMessage("Enter first name.")
       setIsError(true);
     }
     if (!lastName.value.trim()) {
+      setErrors(prev => [...prev, "Enter last name."]);
       setLastNameMessage("Enter last name.")
       setIsError(true);
     }
     if (!password.value.trim()) {
+      setErrors(prev => [...prev, "Enter password."]);
       setPasswordMessage("Enter password.")
       setIsError(true);
     }
 
     if (password.value !== passwordConfirmation.value) {
+      setErrors(prev => [...prev, "Enter password."]);
       setPasswordConfrimationMessage("Enter password.")
       setIsError(true);
     }
@@ -58,9 +67,10 @@ export const RegisterForm = (props: Props) => {
   return (
     <>
       <PageHeader text="Register" />
-      {props.errorMessage &&
-        <Alert severity="error">{props.errorMessage}</Alert>
+      {props.isLoading &&
+        <Button loading>Default</Button>
       }
+      <FormError message={props.errorMessage} errors={errors} />
       <Box 
           // sx={{ mt: 4, p: 3,  }}
           sx={{ display: "flex", flexDirection: "column", gap: 2, borderRadius: 2 }}

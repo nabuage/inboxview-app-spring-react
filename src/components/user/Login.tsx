@@ -6,23 +6,27 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import { Alert, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import { API } from "../utils/API";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../generic/PageHeader";
+import { FormError } from "../generic/FormError";
 
 export const Login = () => {
   const Auth = useContext(AuthContext);
   const navigate = useNavigate();
+  const isAuthenticated = Auth?.userIsAuthenticated();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailMessage, setEmailMessage] = useState<string>("");
   const [passwordMessage, setPasswordMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    if (Auth?.userIsAuthenticated()) {
+    if (isAuthenticated) {
       Auth?.userLogout();
     }    
   }, []);
@@ -30,7 +34,12 @@ export const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
-    const response = await API.authenticate({email: email, password: password});
+    setIsLoading(true);
+
+    const response = await API.authenticate({email: email, password: password})
+      .finally(() => {
+        setIsLoading(false);
+      });
 
     if (response.data !== undefined) {
       Auth?.setUserAuth(response.data);
@@ -49,36 +58,42 @@ export const Login = () => {
 
         setEmail("");
         setPassword("");
-        setIsError(false);
+        setIsError(false);        
 
         navigate("/user");
       }      
     }
     else {
+      setIsError(true);
       if (response.error !== undefined) {
-        setErrorMessage(response.error.error);
-        setIsError(true);
+        setErrorMessage(response.error.error);        
+      }
+      else {
+        setErrorMessage("There was an error processing your request. Please try again.");   
       }
     }
   }
 
   const validateInput = (): boolean => {
     const email = document.getElementById("email") as HTMLInputElement;
-    const password = document.getElementById("password") as HTMLInputElement;        
+    const password = document.getElementById("password") as HTMLInputElement;
 
-    setEmail(email.value);
-    setPassword(password.value);
+    // setEmail(email.value);
+    // setPassword(password.value);
     setEmailMessage("");
     setPasswordMessage("");
     setIsError(false);
+    setErrors([]);
 
     if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailMessage("Enter valid email.")
+      setErrors(prev => [...prev, "Enter valid email."]);
+      setEmailMessage("Enter valid email.");
       setIsError(true);
     }
 
     if (!password.value.trim()) {
-      setPasswordMessage("Enter password.")
+      setErrors(prev => [...prev, "Enter password."]);
+      setPasswordMessage("Enter password.");
       setIsError(true);
     }
 
@@ -89,14 +104,14 @@ export const Login = () => {
     <>            
       <Container maxWidth="sm" sx={{p: 2}}>
         <Paper variant="elevation" square={false} sx={{p: 3}}>
+          {isLoading &&
+            <Button loading>Default</Button>
+          }
           {isError &&
-            <Alert severity="error">
-              {errorMessage}
-            </Alert>
+            <FormError message={errorMessage} errors={errors} />
           }
           <PageHeader text="Login" />
-          <Box 
-              // sx={{ mt: 4, p: 3, border: "1px solid #ccc", borderRadius: 2 }}
+          <Box
               sx={{ display: "flex", flexDirection: "column", gap: 2 }}
               component="form"
               onSubmit={handleSubmit}

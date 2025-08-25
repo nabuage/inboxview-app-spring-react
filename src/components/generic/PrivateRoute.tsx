@@ -9,6 +9,6 @@ interface Props {
 export const PrivateRoute = ({children}: Props) => {
     const Auth = useContext(AuthContext);
     return (
-        Auth?.userIsAuthenticated ? children : <Navigate to={"/login"} />
+        Auth?.userIsAuthenticated() ? children : <Navigate to={"/login"} />
     );
 };
