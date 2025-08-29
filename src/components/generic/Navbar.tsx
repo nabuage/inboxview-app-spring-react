@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -118,14 +118,10 @@ export const Navbar = () => {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map((page) => (
-                <>
-                  {page !== "" &&
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-                  </MenuItem>
-                }
-                </>
+              {pages.filter((page: string) => page !== "").map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                </MenuItem>
               ))}
             </Menu>
           </Box>
@@ -149,11 +145,10 @@ export const Navbar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <>
+              <Fragment key={page}>
                 {page !== ""
                 ? 
                   <Button
-                    key={page}
                     onClick={() => navigateTo(page)}
                     sx={{ my: 2, color: "white", display: "block" }}
                   >
@@ -162,7 +157,7 @@ export const Navbar = () => {
                 :
                   <Box flexGrow={1} />                  
                 }
-              </>
+              </Fragment>
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>

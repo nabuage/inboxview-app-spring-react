@@ -20,22 +20,22 @@ export const DataTable = <TData extends MRT_RowData>({columns, data}: Props<TDat
     muiTableBodyRowProps: { hover: false },
     muiTableProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, .5)',
+        border: "1px solid rgba(81, 81, 81, .5)",
         caption: {
-          captionSide: 'top',
+          captionSide: "top",
         },
       },
     },
     muiTableHeadCellProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, .5)',
-        fontStyle: 'italic',
-        fontWeight: 'normal',
+        border: "1px solid rgba(81, 81, 81, .5)",
+        fontStyle: "italic",
+        fontWeight: "normal",
       },
     },
     muiTableBodyCellProps: {
       sx: {
-        border: '1px solid rgba(81, 81, 81, .5)',
+        border: "1px solid rgba(81, 81, 81, .5)",
       },
     }
   });
