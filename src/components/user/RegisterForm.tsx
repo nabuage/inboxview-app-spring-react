@@ -19,46 +19,51 @@ export const RegisterForm = (props: Props) => {
   const [lastNameMessage, setLastNameMessage] = useState<string>("");
   const [passwordMessage, setPasswordMessage] = useState<string>("");
   const [passwordConfirmationMessage, setPasswordConfrimationMessage] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
   const [errors, setErrors] = useState<string[]>([]);
 
+  const reset = () => {
+    setEmailMessage("");
+    setFirstNameMessage("");
+    setLastNameMessage("");
+    setPasswordMessage("");
+    setErrors([]);
+  }
+
   const validateInput = (): boolean => {
+    let isError = false;
     const email = document.getElementById("email") as HTMLInputElement;
     const firstName = document.getElementById("firstName") as HTMLInputElement;
     const lastName = document.getElementById("lastName") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;
     const passwordConfirmation = document.getElementById("passwordConfirmation") as HTMLInputElement;
 
-    setEmailMessage("");
-    setPasswordMessage("");
-    setIsError(false);
-    setErrors([]);
+    reset();
 
     if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value.trim())) {
       setErrors(prev => [...prev, "Enter valid email."]);
       setEmailMessage("Enter valid email.")
-      setIsError(true);
+      isError = true;
     }
     if (!firstName.value.trim()) {
       setErrors(prev => [...prev, "Enter first name."]);
       setFirstNameMessage("Enter first name.")
-      setIsError(true);
+      isError = true;
     }
     if (!lastName.value.trim()) {
       setErrors(prev => [...prev, "Enter last name."]);
       setLastNameMessage("Enter last name.")
-      setIsError(true);
+      isError = true;
     }
     if (!password.value.trim()) {
       setErrors(prev => [...prev, "Enter password."]);
       setPasswordMessage("Enter password.")
-      setIsError(true);
+      isError = true;
     }
 
     if (password.value !== passwordConfirmation.value) {
       setErrors(prev => [...prev, "Enter password."]);
       setPasswordConfrimationMessage("Enter password.")
-      setIsError(true);
+      isError = true;
     }
 
     return isError;

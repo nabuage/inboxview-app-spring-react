@@ -3,7 +3,7 @@ import { API } from "../utils/API";
 import { Alert, AlertTitle, Container, Link, Paper } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
-export const VerificationPage = () => {
+export const Verification = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const [errorMessage, setErrorMessage] = useState<string>("");

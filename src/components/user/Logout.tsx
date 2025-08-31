@@ -3,7 +3,7 @@ import { API } from "../utils/API";
 import { Alert, AlertTitle, Container, Paper } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 
-export const LogoutPage = () => {
+export const Logout = () => {
   const auth = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState<string>("");
 

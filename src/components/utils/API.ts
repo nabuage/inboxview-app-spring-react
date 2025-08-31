@@ -27,7 +27,7 @@ interface RegisterRequest {
 }
 
 interface User {
-  id: string;
+  id?: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -105,6 +105,27 @@ const getUser = async (): Promise<UserResponse> => {
   }
 }
 
+const updateUser = async (request: User): Promise<UserResponse> => {
+  try {
+    const response = await authenticated.put(
+      "/api/user/",
+      request,
+      {  
+          headers: {
+              "Content-type": "application/json"
+          }
+      });
+
+    return {data: response.data};
+  } catch (error) {
+    console.error("Error registering user.", error);
+    if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
+      return {error: error.response?.data};
+    }
+    throw error;
+  }  
+}
+
 const verifyUser = async (parameters: VerificationParameters): Promise<UserResponse> => {
   try {
     const response = await unauthenticated.get("/api/registration/email/verify", {params: parameters});
@@ -155,7 +176,8 @@ export const API = {
   register,
   verifyUser,
   logout,
-  getUserTransaction
+  getUserTransaction,
+  updateUser
 };
 
 const unauthenticated = axios.create({

@@ -4,13 +4,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
-export const UserPage = () => {
+export const User = ({children}: {children?: React.ReactNode}) => {
   return (
     <>
       <Container maxWidth="sm" sx={{p: 2}}>
         <QueryClientProvider client={queryClient}>
-          <UserTransactions />
-        </QueryClientProvider>        
+          {children ? children : <UserTransactions />}          
+        </QueryClientProvider>
       </Container>
     </>
   );

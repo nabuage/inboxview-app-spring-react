@@ -38,8 +38,8 @@ export const Register = () => {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      setErrorMessage("There is an issue with registration. Please try again.")
-    }    
+      setErrorMessage("There is an issue with registration. Please try again.");
+    }
   }
 
   return (
