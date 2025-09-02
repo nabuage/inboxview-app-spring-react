@@ -1,12 +1,13 @@
-import { Alert, Box, Button, FormControl, FormLabel, TextField } from "@mui/material";
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormLabel, Stack, TextField } from "@mui/material";
 import { FormError } from "../generic/FormError";
 import { PageHeader } from "../generic/PageHeader";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { API } from "../utils/API";
-import type { User } from "../context/AuthContext";
+import { AuthContext, type User } from "../context/AuthContext";
 
 export const Profile = () => {
+  const auth = useContext(AuthContext);
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
@@ -21,6 +22,7 @@ export const Profile = () => {
       firstName: "",
       lastName: ""
     });
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {data: userData, isFetched} = useQuery({
     queryKey: ["user"],
@@ -58,9 +60,22 @@ export const Profile = () => {
         }
     });
 
+  const { mutate: deleteUser } = useMutation({
+      mutationFn: API.deleteUser,
+        onSuccess: () => {
+            queryClient.invalidateQueries();
+            auth?.userLogout();
+        },
+        onError: (err) => {
+            console.error(err);
+            setErrorMessage("There is an issue with the delete. Please try again.");
+        }
+    });
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setUser({...user, [event.target.name]: event.target.value});
   }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
 
@@ -100,6 +115,18 @@ export const Profile = () => {
     }
 
     return isError;
+  }
+
+  const handleDelete = () => {
+    setOpenDialog(true);    
+  }
+
+  const handleDeleteConfirmation = () => {
+    deleteUser();
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   }
 
   return (
@@ -162,14 +189,50 @@ export const Profile = () => {
               helperText={lastNameMessage}
             />
           </FormControl>
-          <Button 
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={validateInput}>
-            Update
-          </Button>
+
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1, sm: 2, md: 4 }}
+            sx={{
+              justifyContent: "space-between"
+            }}
+          >
+            <Button 
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={validateInput}>
+              Update
+            </Button>
+            <Button 
+              variant="contained"
+              color="error"
+              onClick={handleDelete}>
+              Delete
+            </Button>
+          </Stack>          
         </Box>
+
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Delete Account Confirmation
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Your account will be deleted and you will be automatically logged out.
+              Are you sure you want to delete your account?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteConfirmation} color="error">Yes</Button>
+            <Button onClick={handleCloseDialog} color="primary">No</Button>
+          </DialogActions>
+        </Dialog>
     </>
   );
 }

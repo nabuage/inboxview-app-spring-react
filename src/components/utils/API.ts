@@ -123,7 +123,23 @@ const updateUser = async (request: User): Promise<UserResponse> => {
       return {error: error.response?.data};
     }
     throw error;
-  }  
+  }
+}
+
+const deleteUser = async (): Promise<UserResponse> => {
+  try {
+    const response = await authenticated.delete(
+      "/api/user/"
+      );
+
+    return {data: response.data};
+  } catch (error) {
+    console.error("Error registering user.", error);
+    if (axios.isAxiosError<APIError, Record<string, string>>(error)) {
+      return {error: error.response?.data};
+    }
+    throw error;
+  }
 }
 
 const verifyUser = async (parameters: VerificationParameters): Promise<UserResponse> => {
@@ -177,7 +193,8 @@ export const API = {
   verifyUser,
   logout,
   getUserTransaction,
-  updateUser
+  updateUser,
+  deleteUser
 };
 
 const unauthenticated = axios.create({
