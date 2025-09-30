@@ -9,8 +9,7 @@ import dayjs from "dayjs";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import { PageHeader } from "../generic/PageHeader";
-import type { ColumnDefinition } from "../generic/table/GenericTableHead";
-import DataTable from "../generic/table/DataTable";
+import { DataTable, type ColumnDefinition } from "../generic/DataTable";
 
 export const UserTransactions = () => {
   const [year, setYear] = useState<number>(LocalDate.now().year());
@@ -29,27 +28,21 @@ export const UserTransactions = () => {
     }
   }
 
-  const userColumns: ColumnDefinition<UserTransaction>[] = [
+  const userColumns: ColumnDefinition<UserTransaction, keyof UserTransaction>[] = [
     {
-      title: 'Merchant', accessorKey: 'merchantName',
-      id: "merchantName",
-      numeric: false,
-      disablePadding: false,
-      label: 'Merchant'
+      key: "merchantName",
+      header: "Merchant",
+      numeric: false
     },
     {
-      title: 'Date', accessorKey: 'transactionDate',
-      id: "transactionDate",
-      numeric: false,
-      disablePadding: false,
-      label: 'Transaction Date'
+      key: "transactionDate",
+      header: "Transaction Date",
+      numeric: false
     },
     {
-      title: 'Amount', accessorKey: 'amount',
-      id: "amount",
-      numeric: false,
-      disablePadding: false,
-      label: 'Amount'
+      key: "amount",
+      header: "Amount",
+      numeric: true
     },
   ];
 
@@ -72,7 +65,7 @@ export const UserTransactions = () => {
               onAccept={handleDateChange} />
           </LocalizationProvider>        
         </Box>
-        <DataTable data={data ?? []} columns={userColumns} columnId="transactionId" select={false} title=""/>
+        <DataTable<UserTransaction, keyof UserTransaction> data={data ?? []} columns={userColumns} />
       </Stack>      
     </>
   );
