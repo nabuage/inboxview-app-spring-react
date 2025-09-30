@@ -33,28 +33,30 @@ export const DataTable = <TData, K extends keyof TData>({ data, columns }: DataT
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const getComparator = <T, Key extends keyof T>(
-        orderBy: Key,
-        order: "asc" | "desc"
-      ): (a: T, b: T) => number => {
-        return order === "desc"
-          ? (a, b) => descendingComparator(a, b, orderBy)
-          : (a, b) => -descendingComparator(a, b, orderBy);
-    }
+      orderBy: Key,
+      order: "asc" | "desc"
+    ): (a: T, b: T) => number => {
+      return order === "desc"
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+  }
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof TData) => {
-      const isAsc = orderBy === property && order === "asc";
-      setOrder(isAsc ? "desc" : "asc");
-      setOrderBy(property);
-    };
+    const isAsc = orderBy === property && order === "asc";
+    console.log(typeof event);
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   const createSortHandler =
     (property: keyof TData) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(event, property);
-    };
+  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
+    console.log(typeof event);
+    setPage(newPage);
+  };
   
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -62,12 +64,12 @@ export const DataTable = <TData, K extends keyof TData>({ data, columns }: DataT
   };
   
   const visibleRows = React.useMemo(
-      () =>
-        [...data]
-          .sort(getComparator(orderBy, order))
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-      [order, orderBy, page, rowsPerPage, data],
-    );
+    () =>
+      [...data]
+        .sort(getComparator(orderBy, order))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [order, orderBy, page, rowsPerPage, data],
+  );
 
   // const emptyRows =
   //     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
